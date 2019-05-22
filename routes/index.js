@@ -26,7 +26,6 @@ Foos.init({
         primaryKey: true
     },
     foo_store: Sequelize.STRING,
-    foo_time: Sequelize.STRING,
     foo_keyword: Sequelize.TEXT,
     foo_url: Sequelize.STRING,
     foo_del: {
@@ -98,9 +97,8 @@ function foodbLoad(auth) {
                 rows.map((row) => {
                     Foos.create({
                         foo_store: row[0],
-                        foo_time: row[1],
-                        foo_keyword: row[2],
-                        foo_url: row[3],
+                        foo_keyword: row[1],
+                        foo_url: row[2],
                     });
                 });
             });
@@ -123,7 +121,6 @@ router.get('/load', function(req, res) {
                     for (var i = 0; i < body.length; i++) {
                         Foos.create({
                             foo_store: body[i].foo_store,
-                            foo_time: body[i].foo_time,
                             foo_keyword: body[i].foo_keyword,
                             foo_url: body[i].foo_url,
                         });
@@ -139,7 +136,6 @@ router.get('/load', function(req, res) {
 
 router.get('/webhook', function(req, res) {
     var foo_keyword = req.query.foo_keyword ? req.query.foo_keyword : 1;
-    var foo_time = req.query.foo_time ? req.query.foo_time : 1;
     var Op = Sequelize.Op
 
     Foos.findAll({
@@ -154,20 +150,7 @@ router.get('/webhook', function(req, res) {
                             [Op.eq]: foo_keyword
                         }
                     }
-                ],
-                [Op.and]: {
-                    [Op.or]: [{
-                            foo_time: {
-                                [Op.substring]: foo_time
-                            }
-                        },
-                        {
-                            '': {
-                                [Op.eq]: foo_time
-                            }
-                        }
-                    ]
-                }
+                ]
             }
         })
         .then(function(result) {
@@ -178,26 +161,13 @@ router.get('/webhook', function(req, res) {
 router.post('/webhook', function(req, res) {
     var data = req.body;
     var foo_keyword = data.queryResult.parameters["foo_keyword"];
-    var foo_time = data.queryResult.parameters["foo_time"];
-    foo_time = foo_time === '' ? foo_time : 1;
     var Op = Sequelize.Op
 
     Foos.findAll({
             where: {
                 foo_keyword: {
                     [Op.substring]: foo_keyword
-                },
-                [Op.or]: [{
-                        foo_time: {
-                            [Op.substring]: foo_time
-                        }
-                    },
-                    {
-                        '': {
-                            [Op.eq]: foo_time
-                        }
-                    }
-                ]
+                }
             }
         })
         .then(function(result) {

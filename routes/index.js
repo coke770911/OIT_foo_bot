@@ -111,7 +111,7 @@ function foodbLoad(auth) {
     });
 }
 
-/*
+
 router.get('/load', function(req, res) {
     request({
         uri: "https://sheetdb.io/api/v1/ryt19gjxt8ph8",
@@ -135,7 +135,7 @@ router.get('/load', function(req, res) {
             console.log("[google sheet] failed");
         }
     });
-});*/
+});
 
 router.get('/webhook', function(req, res) {
     var foo_keyword = req.query.foo_keyword ? req.query.foo_keyword : 1;
@@ -205,7 +205,7 @@ router.post('/webhook', function(req, res) {
             if (result.length > 0) {
                 res.json({ fulfillmentText: "推薦您吃 " + result[index_num].foo_store + result[index_num].foo_url});
             } else {
-                res.json({ fulfillmentText: "您想吃的東西找不到，請再試試看別的關鍵字。" });
+                res.json({ fulfillmentText: "找不到您想吃的東西，請再試試看別的關鍵字。" });
             }
         });
 });
